@@ -1,30 +1,89 @@
-/* ─────────────────────────────────────────────────────────────
-   @megs.e30  —  stylesheet
-   Font fallback: Space Mono (Google) → Courier New → monospace
-   ───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   @megs.e30  ·  stylesheet
+   Fonts : Righteous (display/headings) + DM Sans (body)
+   Palette:
+     --cream  #F5EDD8   60 % — background
+     --red    #C41230   30 % — hero, accents, hover
+     --lav    #C4B5D4   10 % — sparkles, odd roundels
+     --mint   #9ECFBC   10 % — sparkles, even roundels
+     --ink    #1C1410         — text
+   ═══════════════════════════════════════════════════════════════ */
 
-/* ── Reset ─────────────────────────────────────────────────── */
+/* ── Reset ────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-ul { list-style: none; }
-a  { text-decoration: none; color: inherit; }
+ul, ol { list-style: none; }
+a      { text-decoration: none; color: inherit; }
 
-/* ── Grid-paper background ──────────────────────────────────── */
-body {
-  font-family: 'Space Mono', 'Courier New', monospace;
-  background-color: #f0ebe0;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.065) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.065) 1px, transparent 1px);
-  background-size: 24px 24px;
-  color: #1a1a1a;
-  min-height: 100vh;
+/* ── Design tokens ────────────────────────────────────────────── */
+:root {
+  --cream:    #F5EDD8;
+  --red:      #C41230;
+  --red-dk:   #9e0f28;
+  --lav:      #C4B5D4;
+  --mint:     #9ECFBC;
+  --ink:      #1C1410;
+  --ink-mid:  #5a4e46;
+  --ink-lt:   #9a8c84;
+  --card-bg:  rgba(255, 255, 255, 0.62);
+  --card-border: rgba(0, 0, 0, 0.07);
 }
 
-/* ── Hero ───────────────────────────────────────────────────── */
+/* ── Body — cream + very subtle diagonal rally-stripe ─────────── */
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background-color: var(--cream);
+  background-image: repeating-linear-gradient(
+    -58deg,
+    transparent,
+    transparent 38px,
+    rgba(160, 110, 55, 0.028) 38px,
+    rgba(160, 110, 55, 0.028) 40px
+  );
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Scattered sparkles (fixed so they frame the page) ───────── */
+.deco {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.spark {
+  position: absolute;
+  font-style: normal;
+  animation: sparkle-pulse 3.2s ease-in-out infinite;
+}
+
+.s1 { color: var(--lav);  font-size: 20px; top: 11%;  right:  7%;  opacity: 0.55; animation-delay:  0.0s; }
+.s2 { color: var(--mint); font-size: 11px; top: 30%;  left:   3%;  opacity: 0.50; animation-delay: -1.0s; }
+.s3 { color: var(--lav);  font-size: 24px; top: 57%;  right:  4%;  opacity: 0.50; animation-delay: -1.8s; }
+.s4 { color: var(--mint); font-size: 14px; top: 74%;  left:   5%;  opacity: 0.45; animation-delay: -0.5s; }
+.s5 { color: var(--lav);  font-size: 12px; top: 90%;  right: 11%;  opacity: 0.45; animation-delay: -2.3s; }
+
+@keyframes sparkle-pulse {
+  0%,  100% { transform: scale(1)    rotate(  0deg); opacity: 0.50; }
+  50%        { transform: scale(1.35) rotate(22deg);  opacity: 0.90; }
+}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
 .hero {
-  background-color: #1c0808;
+  background-color: var(--red);
+  /* diagonal stripe texture — classic rally livery feel */
+  background-image: repeating-linear-gradient(
+    -55deg,
+    transparent,
+    transparent 18px,
+    rgba(0, 0, 0, 0.055) 18px,
+    rgba(0, 0, 0, 0.055) 20px
+  );
   overflow: hidden;
-  padding: 28px 24px 0;
+  padding: 30px 24px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-inner {
@@ -32,43 +91,55 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 
-/* ── Hero text ──────────────────────────────────────────────── */
-.car-meta {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: rgba(255,255,255,0.45);
-  text-transform: uppercase;
-  margin-bottom: 6px;
+/* car info pill */
+.car-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+  width: fit-content;
 }
+.sep { opacity: 0.45; }
 
+/* big chunky handle — Righteous for the 80s rounded display feel */
 .handle {
-  font-size: clamp(34px, 12vw, 58px);
-  font-weight: 700;
+  font-family: 'Righteous', cursive;
+  font-size: clamp(38px, 12vw, 60px);
   color: #fff;
-  letter-spacing: -0.02em;
   line-height: 1;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
 }
 
 .specs {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
 .specs li {
+  font-family: 'DM Sans', sans-serif;
   font-size: 10px;
-  letter-spacing: 0.14em;
-  color: rgba(255,255,255,0.38);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.40);
   text-transform: uppercase;
 }
 
-/* ── Car illustration wrapper ───────────────────────────────── */
-.hero-car-wrap {
+/* car illustration wrapper */
+.hero-car {
   position: relative;
   width: 100%;
   display: flex;
@@ -78,12 +149,11 @@ body {
 
 .watermark {
   position: absolute;
-  right: -8px;
-  bottom: 10px;
-  font-size: 130px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.03);
-  letter-spacing: -0.04em;
+  right: -6px;
+  bottom: 8px;
+  font-family: 'Righteous', cursive;
+  font-size: 120px;
+  color: rgba(255, 255, 255, 0.04);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -93,137 +163,163 @@ body {
   width: 88%;
   max-width: 380px;
   height: auto;
-  filter: drop-shadow(0 10px 28px rgba(0,0,0,0.55));
-  margin-bottom: -2px;       /* sit on the hero bottom edge */
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.5));
+  margin-bottom: -2px;
 }
 
-/* ── Content wrapper ────────────────────────────────────────── */
+/* thin lavender → mint gradient strip between hero and content */
+.hero-strip {
+  height: 4px;
+  background: linear-gradient(90deg, var(--lav), var(--mint), var(--lav));
+  margin-top: 2px;
+}
+
+/* ── Content wrapper ──────────────────────────────────────────── */
 .content {
   max-width: 540px;
   margin: 0 auto;
-  padding: 36px 24px 20px;
-}
-
-/* ── Section block ──────────────────────────────────────────── */
-.block {
-  margin-bottom: 38px;
-}
-
-.block-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: #c41230;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.block-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(196,18,48,0.22);
-}
-
-/* ── About ──────────────────────────────────────────────────── */
-.about-body p {
-  font-size: 12px;
-  line-height: 1.75;
-  color: #3a3a3a;
-  margin-bottom: 8px;
-}
-
-.location {
-  font-size: 11px;
-  color: #999;
-  letter-spacing: 0.08em;
-}
-
-/* ── Links list ─────────────────────────────────────────────── */
-.links li {
-  border-top: 1px solid rgba(0,0,0,0.09);
-}
-
-.links li:last-child {
-  border-bottom: 1px solid rgba(0,0,0,0.09);
-}
-
-/* ── Individual link row ────────────────────────────────────── */
-.link-row {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 15px 10px;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/*
-  ┌──────────────────────────────────────────────────────────┐
-  │  FORZA HORIZON slide effect                              │
-  │  ::before is a red layer that expands width 0 → 100%    │
-  │  from the left, identical to the FH menu highlight.     │
-  └──────────────────────────────────────────────────────────┘
-*/
-.link-row::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  width: 0%;
-  background: #c41230;
-  transition: width 0.27s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: 0;
-}
-
-.link-row:hover::before,
-.link-row:focus-visible::before {
-  width: 100%;
-}
-
-/* all children sit above the red layer */
-.row-num,
-.row-icon,
-.row-info,
-.row-go {
+  padding: 40px 20px 24px;
   position: relative;
   z-index: 1;
 }
 
-.row-num {
-  font-size: 10px;
-  color: #b0b0b0;
-  width: 28px;
-  flex-shrink: 0;
-  transition: color 0.22s;
+/* ── Section block ────────────────────────────────────────────── */
+.block { margin-bottom: 42px; }
+
+/* red rounded-pill section label */
+.block-label { margin-bottom: 16px; }
+
+.block-label span {
+  display: inline-block;
+  background: var(--red);
+  color: var(--cream);
+  font-family: 'Righteous', cursive;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  padding: 5px 18px;
+  border-radius: 100px;
 }
 
+/* ── About ────────────────────────────────────────────────────── */
+.about-text {
+  font-size: 13px;
+  line-height: 1.78;
+  color: var(--ink-mid);
+  margin-bottom: 10px;
+}
+
+.location {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-lt);
+  letter-spacing: 0.06em;
+}
+
+/* ── Link cards ───────────────────────────────────────────────── */
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/*
+  Each list item is the card.
+  Hover = lift + red shadow + red left-edge accent via ::before.
+  NO full-background slide — that's the friend's signature move.
+*/
+.link-card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  border: 1.5px solid var(--card-border);
+  position: relative;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+/* red left-edge accent — scales in from centre on hover */
+.link-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: var(--red);
+  border-radius: 0 3px 3px 0;
+  transform: scaleY(0);
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+.link-card:hover,
+.link-card:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(196, 18, 48, 0.14);
+}
+
+.link-card:hover::before,
+.link-card:focus-within::before {
+  transform: scaleY(1);
+}
+
+/* inner anchor */
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ── Circular number roundels ─────────────────────────────────── */
+.row-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Righteous', cursive;
+  font-size: 11px;
+  color: var(--ink);
+  flex-shrink: 0;
+  transition: filter 0.22s;
+}
+
+/* odd items  = lavender */
+.links li:nth-child(odd)  .row-num { background: var(--lav);  }
+/* even items = mint     */
+.links li:nth-child(even) .row-num { background: var(--mint); }
+
+.link-card:hover .row-num { filter: brightness(0.9); }
+
+/* icon */
 .row-icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  color: #666;
+  color: var(--ink-lt);
   transition: color 0.22s;
 }
 
-.row-info {
-  flex: 1;
-  min-width: 0;
-}
+.link-card:hover .row-icon { color: var(--red); }
+
+/* text block */
+.row-info { flex: 1; min-width: 0; }
 
 .row-title {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-family: 'Righteous', cursive;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
   transition: color 0.22s;
 }
 
 .row-handle {
-  font-size: 10px;
-  color: #888;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: var(--ink-lt);
   margin-top: 2px;
   transition: color 0.22s;
   white-space: nowrap;
@@ -231,74 +327,53 @@ body {
   text-overflow: ellipsis;
 }
 
-/* "GO ›" — invisible until hover */
+/* GO › — hidden until hover, slides in from the right */
 .row-go {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-family: 'Righteous', cursive;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   color: transparent;
-  transition: color 0.22s, transform 0.22s;
+  transform: translateX(-8px);
+  transition: color 0.22s, transform 0.24s ease;
   white-space: nowrap;
-  transform: translateX(-6px);
+  flex-shrink: 0;
 }
 
-/* hover state – everything turns white */
-.link-row:hover .row-num,
-.link-row:hover .row-icon,
-.link-row:hover .row-title,
-.link-row:hover .row-handle,
-.link-row:focus-visible .row-num,
-.link-row:focus-visible .row-icon,
-.link-row:focus-visible .row-title,
-.link-row:focus-visible .row-handle {
-  color: #fff;
-}
-
-.link-row:hover .row-go,
-.link-row:focus-visible .row-go {
-  color: rgba(255,255,255,0.88);
+.link-card:hover .row-title { color: var(--red);    }
+.link-card:hover .row-handle { color: var(--ink-mid); }
+.link-card:hover .row-go {
+  color: var(--red);
   transform: translateX(0);
 }
 
-/* ── Stickers row – orbit visual ────────────────────────────── */
-.stickers-li {
-  position: relative;
-}
+/* ── Stickers card — orbit animation ──────────────────────────── */
+.stickers-card .link-row { padding-right: 88px; }
 
-/* make the row leave room for the orbit on the right */
-.stickers-row {
-  padding-right: 96px;
-}
-
-/*
-  Orbit container — positioned at the right of the row.
-  All orbit children use CSS transforms to spin around the centre.
-*/
 .orbit {
   position: absolute;
-  right: 18px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
 }
 
-/* dashed ring */
 .orbit-ring {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1.5px dashed rgba(196,18,48,0.35);
+  border: 1.5px dashed rgba(196, 18, 48, 0.28);
+  transition: border-color 0.22s;
 }
 
-/* large dots on outer orbit */
+.link-card:hover .orbit-ring { border-color: rgba(196, 18, 48, 0.55); }
+
 .orbit-dot {
   position: absolute;
   width: 9px;
   height: 9px;
-  background: #c41230;
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -306,18 +381,19 @@ body {
   animation: spin-orbit 4s linear infinite;
   animation-delay: var(--d, 0s);
 }
+.orbit-dot.lav  { background: var(--lav);  }
+.orbit-dot.mint { background: var(--mint); }
 
 @keyframes spin-orbit {
-  from { transform: rotate(0deg)   translateX(var(--r, 32px)); }
-  to   { transform: rotate(360deg) translateX(var(--r, 32px)); }
+  from { transform: rotate(0deg)   translateX(var(--r, 30px)); }
+  to   { transform: rotate(360deg) translateX(var(--r, 30px)); }
 }
 
-/* small counter-rotating pip */
 .orbit-pip {
   position: absolute;
   width: 5px;
   height: 5px;
-  background: #1a1a1a;
+  background: var(--ink-lt);
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -327,43 +403,30 @@ body {
 }
 
 @keyframes spin-counter {
-  from { transform: rotate(0deg)    translateX(var(--r2, 22px)); }
-  to   { transform: rotate(-360deg) translateX(var(--r2, 22px)); }
+  from { transform: rotate(0deg)    translateX(var(--r2, 20px)); }
+  to   { transform: rotate(-360deg) translateX(var(--r2, 20px)); }
 }
 
-/* orbit elements invert on row hover */
-.link-row:hover ~ .orbit .orbit-ring,
-.link-row:focus-visible ~ .orbit .orbit-ring {
-  border-color: rgba(255,255,255,0.4);
-}
-
-.link-row:hover ~ .orbit .orbit-dot,
-.link-row:focus-visible ~ .orbit .orbit-dot {
-  background: #fff;
-}
-
-.link-row:hover ~ .orbit .orbit-pip,
-.link-row:focus-visible ~ .orbit .orbit-pip {
-  background: rgba(255,255,255,0.7);
-}
-
-/* ── Footer ─────────────────────────────────────────────────── */
+/* ── Footer ───────────────────────────────────────────────────── */
 .site-footer {
   max-width: 540px;
   margin: 0 auto;
-  padding: 14px 24px 28px;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: #b0b0b0;
-  border-top: 1px solid rgba(0,0,0,0.08);
+  padding: 14px 20px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--ink-lt);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
 }
 
-/* ── Responsive tweaks ──────────────────────────────────────── */
+/* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 440px) {
-  .hero { padding: 22px 16px 0; }
-  .content { padding: 26px 16px 16px; }
-  .car-svg { width: 96%; }
-  .watermark { font-size: 90px; }
-  .stickers-row { padding-right: 80px; }
-  .orbit { right: 10px; width: 58px; height: 58px; }
+  .hero       { padding: 22px 16px 0; }
+  .content    { padding: 28px 16px 20px; }
+  .car-svg    { width: 95%; }
+  .watermark  { font-size: 90px; }
+  .stickers-card .link-row { padding-right: 78px; }
+  .orbit      { right: 10px; width: 56px; height: 56px; }
 }
