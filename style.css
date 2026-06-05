@@ -1,279 +1,294 @@
 /* ═══════════════════════════════════════════════════════════════
-   @megs.e30  ·  stylesheet
-   Fonts : Righteous (display/headings) + DM Sans (body)
-   Palette:
-     --cream  #F5EDD8   60 % — background
-     --red    #C41230   30 % — hero, accents, hover
-     --lav    #C4B5D4   10 % — sparkles, odd roundels
-     --mint   #9ECFBC   10 % — sparkles, even roundels
-     --ink    #1C1410         — text
+   @megs.e30  ·  stylesheet v3
+   Black + red + glass.  Righteous (display) + DM Sans (body).
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Reset ────────────────────────────────────────────────────── */
+/* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-ul, ol { list-style: none; }
-a      { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+a  { text-decoration: none; color: inherit; }
+html { scroll-behavior: smooth; }
 
-/* ── Design tokens ────────────────────────────────────────────── */
+/* ── Tokens ── */
 :root {
-  --cream:    #F5EDD8;
-  --red:      #C41230;
-  --red-dk:   #9e0f28;
-  --lav:      #C4B5D4;
-  --mint:     #9ECFBC;
-  --ink:      #1C1410;
-  --ink-mid:  #5a4e46;
-  --ink-lt:   #9a8c84;
-  --card-bg:  rgba(255, 255, 255, 0.62);
-  --card-border: rgba(0, 0, 0, 0.07);
+  --red:       #C41230;
+  --red-glow:  rgba(196, 18, 48, 0.55);
+  --lav:       #C4B5D4;
+  --mint:      #9ECFBC;
+  --glass:     rgba(255, 255, 255, 0.05);
+  --glass-b:   rgba(255, 255, 255, 0.09);
 }
 
-/* ── Body — cream + very subtle diagonal rally-stripe ─────────── */
-body {
+/* ── Body ── */
+html, body {
+  background: #000;
+  color: #fff;
   font-family: 'DM Sans', system-ui, sans-serif;
-  background-color: var(--cream);
-  background-image: repeating-linear-gradient(
-    -58deg,
-    transparent,
-    transparent 38px,
-    rgba(160, 110, 55, 0.028) 38px,
-    rgba(160, 110, 55, 0.028) 40px
-  );
-  color: var(--ink);
-  min-height: 100vh;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* ── Scattered sparkles (fixed so they frame the page) ───────── */
-.deco {
+/* ── Canvas — fixed full-screen background ── */
+#canvas {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
+  display: block;
 }
 
-.spark {
-  position: absolute;
-  font-style: normal;
-  animation: sparkle-pulse 3.2s ease-in-out infinite;
-}
-
-.s1 { color: var(--lav);  font-size: 20px; top: 11%;  right:  7%;  opacity: 0.55; animation-delay:  0.0s; }
-.s2 { color: var(--mint); font-size: 11px; top: 30%;  left:   3%;  opacity: 0.50; animation-delay: -1.0s; }
-.s3 { color: var(--lav);  font-size: 24px; top: 57%;  right:  4%;  opacity: 0.50; animation-delay: -1.8s; }
-.s4 { color: var(--mint); font-size: 14px; top: 74%;  left:   5%;  opacity: 0.45; animation-delay: -0.5s; }
-.s5 { color: var(--lav);  font-size: 12px; top: 90%;  right: 11%;  opacity: 0.45; animation-delay: -2.3s; }
-
-@keyframes sparkle-pulse {
-  0%,  100% { transform: scale(1)    rotate(  0deg); opacity: 0.50; }
-  50%        { transform: scale(1.35) rotate(22deg);  opacity: 0.90; }
-}
-
-/* ── HERO ─────────────────────────────────────────────────────── */
-.hero {
-  background-color: var(--red);
-  /* diagonal stripe texture — classic rally livery feel */
-  background-image: repeating-linear-gradient(
-    -55deg,
-    transparent,
-    transparent 18px,
-    rgba(0, 0, 0, 0.055) 18px,
-    rgba(0, 0, 0, 0.055) 20px
-  );
-  overflow: hidden;
-  padding: 30px 24px 0;
+/* ── Page wrapper ── */
+.page {
   position: relative;
   z-index: 1;
 }
 
-.hero-inner {
-  max-width: 540px;
-  margin: 0 auto;
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* car info pill */
-.car-badge {
-  display: inline-flex;
+/* ── Car splash ── */
+.car-splash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.car-img {
+  position: absolute;
+  bottom: 0;
+  object-fit: contain;
+  /* red aura + depth shadow on transparent car */
+  filter:
+    drop-shadow(0  0 30px rgba(196,18,48,0.55))
+    drop-shadow(0 20px 40px rgba(0,0,0,0.9));
+}
+
+/* Front 3/4 view — left, angled in */
+.car-front {
+  left: -4%;
+  height: 62%;
+  transform: scaleX(-1) rotate(-3deg);    /* face right into page */
+  transform-origin: bottom right;
+  opacity: 0.75;
+}
+
+/* Rear 3/4 view — right, hero piece */
+.car-rear {
+  right: -4%;
+  height: 80%;
+  transform: rotate(2deg);
+  transform-origin: bottom left;
+  opacity: 0.90;
+}
+
+/* ── Hero text ── */
+.hero-text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 5px;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  gap: 0;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.16);
   border-radius: 100px;
-  padding: 5px 14px;
-  font-family: 'DM Sans', sans-serif;
+  padding: 5px 16px;
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.72);
-  letter-spacing: 0.1em;
-  margin-bottom: 12px;
-  width: fit-content;
-}
-.sep { opacity: 0.45; }
-
-/* big chunky handle — Righteous for the 80s rounded display feel */
-.handle {
-  font-family: 'Righteous', cursive;
-  font-size: clamp(38px, 12vw, 60px);
-  color: #fff;
-  line-height: 1;
+  letter-spacing: 0.13em;
+  color: rgba(255,255,255,0.6);
   margin-bottom: 18px;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
 }
 
-.specs {
+/* ── @megs.e30 ── */
+.hero-handle {
+  font-family: 'Righteous', cursive;
+  font-size: clamp(52px, 16vw, 100px);
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 22px;
+  /*
+    The red glow text-shadow gives a bleeding neon look.
+    Layered: tight red core → wide soft bloom.
+  */
+  text-shadow:
+    0  0  14px rgba(196,18,48,0.9),
+    0  0  40px rgba(196,18,48,0.6),
+    0  0  80px rgba(196,18,48,0.35),
+    0  0 160px rgba(196,18,48,0.15);
+  /*
+    JS adds `transform: perspective(900px) rotateY(Xdeg)`
+    so the text tilts in 3D as the user scrolls.
+  */
+  display: inline-block;
+  will-change: transform;
+}
+
+/* ── Spec lines ── */
+.hero-specs {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin-bottom: 24px;
+  gap: 4px;
+  margin-bottom: 40px;
 }
 
-.specs li {
-  font-family: 'DM Sans', sans-serif;
+.hero-specs li {
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.40);
+  letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.3);
   text-transform: uppercase;
 }
 
-/* car illustration wrapper */
-.hero-car {
-  position: relative;
-  width: 100%;
+/* ── Animated scroll arrow ── */
+.scroll-hint {
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
 }
 
-.watermark {
-  position: absolute;
-  right: -6px;
-  bottom: 8px;
-  font-family: 'Righteous', cursive;
-  font-size: 120px;
-  color: rgba(255, 255, 255, 0.04);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
+.scroll-arrow {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-right: 2px solid rgba(255,255,255,0.35);
+  border-bottom: 2px solid rgba(255,255,255,0.35);
+  transform: rotate(45deg);
+  animation: bounce-down 1.8s ease-in-out infinite;
 }
 
-.car-svg {
-  width: 88%;
-  max-width: 380px;
-  height: auto;
-  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.5));
-  margin-bottom: -2px;
+@keyframes bounce-down {
+  0%, 100% { transform: rotate(45deg) translate(0,0);     opacity: 0.4; }
+  50%       { transform: rotate(45deg) translate(5px,5px); opacity: 1;   }
 }
 
-/* thin lavender → mint gradient strip between hero and content */
-.hero-strip {
-  height: 4px;
-  background: linear-gradient(90deg, var(--lav), var(--mint), var(--lav));
-  margin-top: 2px;
-}
-
-/* ── Content wrapper ──────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   CONTENT
+   ═══════════════════════════════════════════════════════════════ */
 .content {
   max-width: 540px;
   margin: 0 auto;
-  padding: 40px 20px 24px;
-  position: relative;
-  z-index: 1;
+  padding: 60px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* ── Section block ────────────────────────────────────────────── */
-.block { margin-bottom: 42px; }
+/* ── Glassmorphism card ── */
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-b);
+  border-radius: 22px;
+  padding: 26px;
+}
 
-/* red rounded-pill section label */
-.block-label { margin-bottom: 16px; }
-
-.block-label span {
-  display: inline-block;
-  background: var(--red);
-  color: var(--cream);
+/* ── Section label ── */
+.card-label {
   font-family: 'Righteous', cursive;
   font-size: 11px;
-  letter-spacing: 0.22em;
-  padding: 5px 18px;
-  border-radius: 100px;
+  letter-spacing: 0.24em;
+  color: var(--red);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* ── About ────────────────────────────────────────────────────── */
+.card-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(196,18,48,0.4), transparent);
+}
+
+/* ── About ── */
 .about-text {
   font-size: 13px;
-  line-height: 1.78;
-  color: var(--ink-mid);
-  margin-bottom: 10px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.68);
+  margin-bottom: 12px;
 }
 
-.location {
+.about-loc {
   font-size: 11px;
-  font-weight: 500;
-  color: var(--ink-lt);
+  color: rgba(255,255,255,0.3);
   letter-spacing: 0.06em;
 }
 
-/* ── Link cards ───────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   TRANSPARENT LINK BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
 .links {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/*
-  Each list item is the card.
-  Hover = lift + red shadow + red left-edge accent via ::before.
-  NO full-background slide — that's the friend's signature move.
-*/
-.link-card {
-  background: var(--card-bg);
-  border-radius: 14px;
-  border: 1.5px solid var(--card-border);
-  position: relative;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-}
-
-/* red left-edge accent — scales in from centre on hover */
-.link-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 3px;
-  background: var(--red);
-  border-radius: 0 3px 3px 0;
-  transform: scaleY(0);
-  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
-  z-index: 2;
-}
-
-.link-card:hover,
-.link-card:focus-within {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(196, 18, 48, 0.14);
-}
-
-.link-card:hover::before,
-.link-card:focus-within::before {
-  transform: scaleY(1);
-}
-
-/* inner anchor */
-.link-row {
+.link-btn {
   display: flex;
   align-items: center;
   gap: 13px;
-  padding: 15px 14px;
+  padding: 14px 16px;
+
+  /* fully transparent, border only */
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 14px;
+  color: #fff;
   cursor: pointer;
+
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color  0.25s ease,
+    box-shadow    0.25s ease,
+    transform     0.20s ease;
+}
+
+/* Red radial sweep on hover — subtle, not a full slide */
+.link-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 0% 50%, rgba(196,18,48,0.18) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.25s;
+  border-radius: inherit;
+}
+
+.link-btn:hover,
+.link-btn:focus-visible {
+  border-color: rgba(196,18,48,0.55);
+  box-shadow:
+    0  0  0 1px rgba(196,18,48,0.12),
+    0  0 22px rgba(196,18,48,0.22),
+    inset 0 0 16px rgba(196,18,48,0.06);
+  transform: translateX(5px);
   outline: none;
 }
 
-/* ── Circular number roundels ─────────────────────────────────── */
-.row-num {
+.link-btn:hover::before,
+.link-btn:focus-visible::before { opacity: 1; }
+
+/* ── Roundels ── */
+.btn-num {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -282,151 +297,82 @@ body {
   justify-content: center;
   font-family: 'Righteous', cursive;
   font-size: 11px;
-  color: var(--ink);
+  color: #1a1a1a;
   flex-shrink: 0;
-  transition: filter 0.22s;
 }
+.btn-num.lav  { background: var(--lav);  }
+.btn-num.mint { background: var(--mint); }
 
-/* odd items  = lavender */
-.links li:nth-child(odd)  .row-num { background: var(--lav);  }
-/* even items = mint     */
-.links li:nth-child(even) .row-num { background: var(--mint); }
-
-.link-card:hover .row-num { filter: brightness(0.9); }
-
-/* icon */
-.row-icon {
+/* ── Icons ── */
+.btn-icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  color: var(--ink-lt);
+  color: rgba(255,255,255,0.42);
   transition: color 0.22s;
 }
+.link-btn:hover .btn-icon { color: var(--red); }
 
-.link-card:hover .row-icon { color: var(--red); }
+/* ── Text block ── */
+.btn-info { flex: 1; min-width: 0; }
 
-/* text block */
-.row-info { flex: 1; min-width: 0; }
-
-.row-title {
+.btn-title {
   font-family: 'Righteous', cursive;
   font-size: 13px;
   letter-spacing: 0.08em;
-  color: var(--ink);
+  color: rgba(255,255,255,0.88);
   transition: color 0.22s;
 }
+.link-btn:hover .btn-title { color: #fff; }
 
-.row-handle {
-  font-family: 'DM Sans', sans-serif;
+.btn-handle {
   font-size: 11px;
-  color: var(--ink-lt);
+  color: rgba(255,255,255,0.38);
   margin-top: 2px;
-  transition: color 0.22s;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.22s;
 }
+.link-btn:hover .btn-handle { color: rgba(255,255,255,0.65); }
 
-/* GO › — hidden until hover, slides in from the right */
-.row-go {
+/* ── GO › ── */
+.btn-go {
   font-family: 'Righteous', cursive;
   font-size: 12px;
-  letter-spacing: 0.05em;
   color: transparent;
   transform: translateX(-8px);
   transition: color 0.22s, transform 0.24s ease;
-  white-space: nowrap;
   flex-shrink: 0;
+  white-space: nowrap;
 }
-
-.link-card:hover .row-title { color: var(--red);    }
-.link-card:hover .row-handle { color: var(--ink-mid); }
-.link-card:hover .row-go {
+.link-btn:hover .btn-go {
   color: var(--red);
   transform: translateX(0);
 }
 
-/* ── Stickers card — orbit animation ──────────────────────────── */
-.stickers-card .link-row { padding-right: 88px; }
-
-.orbit {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 64px;
-  height: 64px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.orbit-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.5px dashed rgba(196, 18, 48, 0.28);
-  transition: border-color 0.22s;
-}
-
-.link-card:hover .orbit-ring { border-color: rgba(196, 18, 48, 0.55); }
-
-.orbit-dot {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  margin: -4.5px 0 0 -4.5px;
-  animation: spin-orbit 4s linear infinite;
-  animation-delay: var(--d, 0s);
-}
-.orbit-dot.lav  { background: var(--lav);  }
-.orbit-dot.mint { background: var(--mint); }
-
-@keyframes spin-orbit {
-  from { transform: rotate(0deg)   translateX(var(--r, 30px)); }
-  to   { transform: rotate(360deg) translateX(var(--r, 30px)); }
-}
-
-.orbit-pip {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  background: var(--ink-lt);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  margin: -2.5px 0 0 -2.5px;
-  animation: spin-counter 6s linear infinite;
-  animation-delay: var(--d2, 0s);
-}
-
-@keyframes spin-counter {
-  from { transform: rotate(0deg)    translateX(var(--r2, 20px)); }
-  to   { transform: rotate(-360deg) translateX(var(--r2, 20px)); }
-}
-
-/* ── Footer ───────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════ */
 .site-footer {
-  max-width: 540px;
-  margin: 0 auto;
-  padding: 14px 20px 36px;
-  font-family: 'DM Sans', sans-serif;
+  text-align: center;
+  padding: 16px 20px 40px;
   font-size: 11px;
-  letter-spacing: 0.16em;
-  color: var(--ink-lt);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  position: relative;
-  z-index: 1;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.18);
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-/* ── Responsive ───────────────────────────────────────────────── */
-@media (max-width: 440px) {
-  .hero       { padding: 22px 16px 0; }
-  .content    { padding: 28px 16px 20px; }
-  .car-svg    { width: 95%; }
-  .watermark  { font-size: 90px; }
-  .stickers-card .link-row { padding-right: 78px; }
-  .orbit      { right: 10px; width: 56px; height: 56px; }
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .car-rear  { height: 60%; right: -8%; }
+  .car-front { height: 45%; left: -8%; }
+  .content   { padding: 40px 14px 30px; }
+  .glass-card { padding: 20px 16px; }
+}
+
+@media (max-width: 360px) {
+  .car-front { display: none; }
 }
